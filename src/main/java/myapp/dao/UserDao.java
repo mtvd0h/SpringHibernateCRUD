@@ -2,11 +2,12 @@ package myapp.dao;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import myapp.model.Role;
 import myapp.model.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 @Component
 public class UserDao {
@@ -15,7 +16,7 @@ public class UserDao {
     private EntityManager entityManager;
 
     @Transactional(readOnly = true)
-    public List<User> index() {
+    public List<User> showUsers() {
         return entityManager.createQuery("from User", User.class).getResultList();
     }
     @Transactional(readOnly = true)
@@ -23,8 +24,16 @@ public class UserDao {
         return entityManager.find(User.class, id);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<User> getByUsername(String username) {
+        return Optional.ofNullable( (User) entityManager.find(User.class, username));
+    }
+
     @Transactional
     public void save(User user) {
+        Role defaultRole = new Role("ROLE_USER");
+        defaultRole.setUser(user);
+        user.setRoles(new ArrayList<>(Collections.singletonList(defaultRole)));
         entityManager.persist(user);
     }
 
@@ -32,7 +41,6 @@ public class UserDao {
     public void update(int id, User updatedUser) {
         User userToBeUpdated = entityManager.find(User.class, id);
         userToBeUpdated.setName(updatedUser.getName());
-        userToBeUpdated.setLastname(updatedUser.getLastname());
         userToBeUpdated.setAge(updatedUser.getAge());
         entityManager.merge(userToBeUpdated);
     }

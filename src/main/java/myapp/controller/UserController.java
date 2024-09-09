@@ -1,61 +1,30 @@
 package myapp.controller;
 
-import myapp.dao.UserDao;
-import myapp.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/")
 public class UserController {
 
-    private final UserDao userDao;
+	@RequestMapping(value = "hello", method = RequestMethod.GET)
+	public String printWelcome(ModelMap model) {
+		List<String> messages = new ArrayList<>();
+		messages.add("Hello!");
+		messages.add("I'm Spring MVC-SECURITY application");
+		messages.add("5.2.0 version by sep'19 ");
+		model.addAttribute("messages", messages);
+		return "pages/hello";
+	}
 
-    @Autowired
-    public UserController(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    @GetMapping()
-    public String index(Model model) {
-        model.addAttribute("users",userDao.index());
-        return "pages/index";
-
-    }
-
-    @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model) {
-        model.addAttribute("user", userDao.show(id));
-        return "pages/show";
-    }
-    @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") User user) {
-        return "pages/new";
-    }
-    @PostMapping()
-    public String create(@ModelAttribute("user") User user) {
-        userDao.save(user);
-        return "redirect:/users";
-    }
-
-    @GetMapping("/{id}/edit")
-    public String editUser(Model model, @PathVariable("id") int id) {
-        model.addAttribute("user", userDao.show(id));
-        return "pages/edit";
-    }
-
-    @PatchMapping("/{id}")
-    public String update(@ModelAttribute("user") User user, @PathVariable("id") int id) {
-        userDao.update(id, user);
-        return "redirect:/users";
-    }
-
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id) {
-        userDao.delete(id);
-        return "redirect:/users";
+    @RequestMapping(value = "login", method = RequestMethod.GET)
+    public String loginPage() {
+        return "pages/login";
     }
 
 }

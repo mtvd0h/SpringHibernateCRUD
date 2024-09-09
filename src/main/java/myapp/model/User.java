@@ -1,11 +1,15 @@
 package myapp.model;
 
-
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table (name = "User")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @Column(name = "id")
@@ -15,18 +19,21 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "lastname")
-    private String lastname;
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "age")
     private Byte age;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private List<Role> roles;
+
     public User() {
     }
 
-    public User(String name, String lastname, Byte age) {
+    public User(String name, String password, Byte age) {
         this.name = name;
-        this.lastname = lastname;
+        this.password = password;
         this.age = age;
     }
 
@@ -46,14 +53,6 @@ public class User {
         this.name = name;
     }
 
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
     public Byte getAge() {
         return age;
     }
@@ -67,8 +66,54 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
+                ", lastname='" + password + '\'' +
                 ", age=" + age +
                 '}';
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return name;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
