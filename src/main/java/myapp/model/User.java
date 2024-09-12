@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table (name = "User")
+@Table (name = "user")
 public class User implements UserDetails {
 
     @Id
@@ -16,8 +16,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "lastname")
+    private String lastname;
 
     @Column(name = "password")
     private String password;
@@ -26,14 +29,15 @@ public class User implements UserDetails {
     private Byte age;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @Column(name = "roles")
     private List<Role> roles;
 
     public User() {
     }
 
-    public User(String name, String password, Byte age) {
-        this.name = name;
-        this.password = password;
+    public User(String username, String lastname, Byte age) {
+        this.username = username;
+        this.lastname=lastname;
         this.age = age;
     }
 
@@ -45,44 +49,9 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Byte getAge() {
-        return age;
-    }
-
-    public void setAge(Byte age) {
-        this.age = age;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", lastname='" + password + '\'' +
-                ", age=" + age +
-                '}';
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override
@@ -105,8 +74,50 @@ public class User implements UserDetails {
         return true;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", password='" + password + '\'' +
+                ", age=" + age +
+                ", roles=" + roles +
+                '}';
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Byte getAge() {
+        return age;
+    }
+
+    public void setAge(Byte age) {
+        this.age = age;
     }
 
     public List<Role> getRoles() {

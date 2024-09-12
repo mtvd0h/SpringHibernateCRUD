@@ -24,10 +24,6 @@ public class UserDao {
         return entityManager.find(User.class, id);
     }
 
-    @Transactional(readOnly = true)
-    public Optional<User> getByUsername(String username) {
-        return Optional.ofNullable( (User) entityManager.find(User.class, username));
-    }
 
     @Transactional
     public void save(User user) {
@@ -37,10 +33,16 @@ public class UserDao {
         entityManager.persist(user);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<User> getUserByUsername(String username){
+        User user = (User) entityManager.createQuery("from User where username = :username").setParameter("username", username).getSingleResult();
+        return Optional.ofNullable(user);
+    }
+
     @Transactional
     public void update(int id, User updatedUser) {
         User userToBeUpdated = entityManager.find(User.class, id);
-        userToBeUpdated.setName(updatedUser.getName());
+        userToBeUpdated.setUsername(updatedUser.getUsername());
         userToBeUpdated.setAge(updatedUser.getAge());
         entityManager.merge(userToBeUpdated);
     }

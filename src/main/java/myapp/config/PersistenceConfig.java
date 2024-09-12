@@ -105,7 +105,8 @@ public class PersistenceConfig implements WebMvcConfigurer {
     private Properties additionalProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-       // properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
+//        properties.put("hibernate.ddl-auto", env.getProperty("hibernate.ddl-auto"));
+//        properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
         return properties;
     }
 }
